@@ -18,13 +18,11 @@ OUT_DIR = "kprofiles_group_data"
 os.makedirs(OUT_DIR, exist_ok=True)
 
 def fetch_url(url):
-    """Fetch a page, return BeautifulSoup."""
     resp = requests.get(url, headers=HEADERS, timeout=20)
     resp.raise_for_status()
     return BeautifulSoup(resp.text, "html.parser")
 
 def extract_group_links(soup):
-    """From a group list page, find all group profile URLs."""
     container = soup.find("div", class_="entry-content herald-entry-content")
     if not container:
         return []
@@ -57,11 +55,10 @@ def scrape_group_page(url):
     buffer = []
 
     def flush_section():
-        """Write buffered paragraphs."""
         if current_section is not None and buffer:
             data["sections"].append({
                 "section_title": current_section,
-                "content": "\n".join(buffer)
+                "content": "\n".join(buffer)}
             )
 
     for p in paras:
@@ -106,8 +103,6 @@ def main():
     with open(out_path, "w", encoding="utf-8") as f:
         for entry in all_group_data:
             f.write(json.dumps(entry, ensure_ascii=False) + "\n")
-
-    print("Done. Saved to:", out_path)
 
 if __name__ == "__main__":
     main()
